@@ -32,35 +32,45 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'PezCtrl'
   })
 
-    .state('PEZ.playlists', {
-      url: '/playlists',
+    .state('PEZ.Customers', {
+      url: '/Customers',
       views: {
         'menuContent': {
-          templateUrl: 'templates/playlists.html',
-          controller: 'PlaylistsCtrl'
+          templateUrl: 'templates/Customers.html',
+          controller: 'CustomersCtrl'
         }
       }
     })
 
-    .state('PEZ.add_customer', {
-      url: '/AddCustomer',
+    .state('PEZ.CustomerAdd', {
+      url: '/Customer/Add',
       views: {
         'menuContent': {
-          templateUrl: 'templates/AddCustomer.html',
-          controller: 'AddCustomerCtrl'
+          templateUrl: 'templates/CustomerAdd.html',
+          controller: 'CustomerAddCtrl'
+        }
+      }
+    })
+
+    .state('PEZ.CustomerList', {
+      url: '/Customer/List/:customerId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/CustomerList.html',
+          controller: 'CustomerListCtrl'
         }
       }
     })
 
   .state('PEZ.single', {
-    url: '/playlists/:playlistId',
+    url: '/Customer/:customerId',
     views: {
       'menuContent': {
-        templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
+        templateUrl: 'templates/CustomerDetails.html',
+        controller: 'CustomerDetailsCtrl'
       }
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/PEZ/playlists');
+  $urlRouterProvider.otherwise('/PEZ/Customers');
 });

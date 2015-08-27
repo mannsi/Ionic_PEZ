@@ -25,16 +25,20 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
+.controller('CustomersCtrl', function($scope) {
+  $scope.customers = [
     { title: 'Einar B. Sigurbergsson', id: 1 },
     { title: 'Ari Arason', id: 2 },
     { title: 'Sigga Ragga', id: 3 },
     { title: 'Hamstur Þorsteinsson', id: 4 }
   ];
-
-
 })
 
-.controller('AddCustomerCtrl', function($scope) {
-});
+.controller('CustomerDetailsCtrl', function($scope) {
+})
+
+.controller('CustomerAddCtrl', function($scope) {
+})
+
+.controller('CustomerListCtrl', function($scope) {
+})
