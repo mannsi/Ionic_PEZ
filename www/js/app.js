@@ -25,14 +25,14 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
-    .state('app', {
-    url: '/app',
+    .state('PEZ', {
+    url: '/PEZ',
     abstract: true,
     templateUrl: 'templates/menu.html',
-    controller: 'AppCtrl'
+    controller: 'PezCtrl'
   })
 
-    .state('app.playlists', {
+    .state('PEZ.playlists', {
       url: '/playlists',
       views: {
         'menuContent': {
@@ -42,7 +42,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     })
 
-    .state('app.add_customer', {
+    .state('PEZ.add_customer', {
       url: '/AddCustomer',
       views: {
         'menuContent': {
@@ -52,7 +52,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     })
 
-  .state('app.single', {
+  .state('PEZ.single', {
     url: '/playlists/:playlistId',
     views: {
       'menuContent': {
@@ -62,5 +62,5 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('/PEZ/playlists');
 });
