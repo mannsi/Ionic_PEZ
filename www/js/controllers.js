@@ -34,11 +34,23 @@ angular.module('starter.controllers', [])
   ];
 })
 
-.controller('CustomerDetailsCtrl', function($scope) {
+.controller('CustomerDetailsCtrl', function($scope, $state , $stateParams) {
+    $scope.customerId = $stateParams.customerId
+    console.log($stateParams)
 })
 
 .controller('CustomerAddCtrl', function($scope) {
 })
 
-.controller('CustomerListCtrl', function($scope) {
+.controller('CustomerListCtrl', function($scope, $state , $stateParams) {
+    $scope.customerId = $stateParams.customerId
+    console.log($stateParams)
 })
+
+.controller('CustomerTreatmentCtrl', function($scope, $state , $stateParams) {
+    $scope.customerId = $stateParams.customerId
+    console.log($stateParams)
+  })
+
+
+

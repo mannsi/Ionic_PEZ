@@ -53,11 +53,21 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     })
 
     .state('PEZ.CustomerList', {
-      url: '/Customer/List/:customerId',
+      url: 'Customer/List/:customerId',
       views: {
         'menuContent': {
           templateUrl: 'templates/CustomerList.html',
           controller: 'CustomerListCtrl'
+        }
+      }
+    })
+
+    .state('PEZ.Treatment', {
+      url: '/Customer/Treatment/:customerId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/CustomerTreatment.html',
+          controller: 'CustomerTreatmentCtrl'
         }
       }
     })
