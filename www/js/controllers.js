@@ -1,56 +1,76 @@
 angular.module('starter.controllers', [])
 
-.controller('PezCtrl', function($scope, $ionicModal, $timeout) {
+    .controller('PezCtrl', function($scope, $ionicModal, $timeout) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+      // With the new view caching in Ionic, Controllers are only called
+      // when they are recreated or on app start, instead of every page change.
+      // To listen for when this page is active (for example, to refresh data),
+      // listen for the $ionicView.enter event:
+      //$scope.$on('$ionicView.enter', function(e) {
+      //});
+    })
 
-    // Create and load the Modal
-    $ionicModal.fromTemplateUrl('PEZ/AddCustomer', function(modal) {
-      $scope.taskModal = modal;
-    }, {
-      scope: $scope,
-      animation: 'slide-in-up'
+    .controller('CustomerListCtrl', function($scope, dataService) {
+        $scope.customers = dataService.GetCustomerList();
+    })
+
+    .controller('CustomerCtrl', function($scope, $stateParams, $ionicHistory, Camera, dataService) {
+        if ($stateParams.customerId)
+        {
+            var customerId = $stateParams.customerId;
+            var customerObject = dataService.GetCustomer(customerId);
+            $scope.customer = customerObject;
+        }
+
+        $scope.imageURI = '';
+        $scope.getPhoto = function() {
+            Camera.getPicture().then(function(imageURI) {
+                console.log(imageURI);
+                $scope.imageURI = imageURI;
+            }, function(err) {
+                console.err(err);
+            });
+        }
+
+        $scope.saveCustomer = function(customer) {
+            if (customer)
+            {
+                customer.imageURI = $scope.imageURI;
+                console.log(customer);
+                dataService.SaveCustomer(customer);
+            }
+
+            $ionicHistory.goBack();
+        };
+
+        $scope.adstandandi = {show:false};
+        $scope.sjukdomar = {show:false};
+        $scope.annad = {show:false};
+
+        $scope.toggleGroup = function(group) {
+            group.show = !group.show;
+        };
+        $scope.isGroupShown = function(group) {
+            return group.show;
+        };
+    })
+
+    .controller('TreatmentListCtrl', function($scope , $stateParams, dataService) {
+        var customerId = $stateParams.customerId;
+        $scope.customer = dataService.GetCustomer(customerId);
+        $scope.treatments = dataService.GetTreatmentList(customerId);
+    })
+
+    .controller('TreatmentCtrl', function($scope , $stateParams, dataService) {
+        var customerId = $stateParams.customerId;
+        var treatmentId = $stateParams.treatmentId;
+        $scope.customer = dataService.GetCustomer(customerId);
+        $scope.treatment = dataService.GetTreatment(customerId, treatmentId);
+    })
+
+    .controller('TreatmentAddCtrl', function($scope , $stateParams) {
+        $scope.treatment = {id: $stateParams.treatmentId};
     });
-
-
-    $scope.AddCustomer = function() {
-      //$scope.taskModal.show();
-      alert("working")
-    };
-
-})
-
-.controller('CustomersCtrl', function($scope) {
-  $scope.customers = [
-    { title: 'Einar B. Sigurbergsson', id: 1 },
-    { title: 'Ari Arason', id: 2 },
-    { title: 'Sigga Ragga', id: 3 },
-    { title: 'Hamstur Þorsteinsson', id: 4 }
-  ];
-})
-
-.controller('CustomerDetailsCtrl', function($scope, $state , $stateParams) {
-    $scope.customerId = $stateParams.customerId
-    console.log($stateParams)
-})
-
-.controller('CustomerAddCtrl', function($scope) {
-})
-
-.controller('CustomerListCtrl', function($scope, $state , $stateParams) {
-    $scope.customerId = $stateParams.customerId
-    console.log($stateParams)
-})
-
-.controller('CustomerTreatmentCtrl', function($scope, $state , $stateParams) {
-    $scope.customerId = $stateParams.customerId
-    console.log($stateParams)
-  })
 
 
 

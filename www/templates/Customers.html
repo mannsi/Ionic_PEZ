@@ -1,8 +1,11 @@
 <ion-view view-title="Skjólstæðingar">
+    <ion-nav-buttons side="right">
+        <a class="button button-icon ion-plus-round" menu-toggle="left" href="#/PEZ/Customer/Add"></a>
+    </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="customer in customers" href="#/PEZ/Customer/List/{{customer.id}}">
-        {{customer.title}}
+      <ion-item ng-repeat="customer in customers" href="#/PEZ/TreatmentList/{{customer.id}}">
+        {{customer.name}}
       </ion-item>
     </ion-list>
   </ion-content>

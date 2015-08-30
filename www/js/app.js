@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -26,18 +26,29 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   $stateProvider
 
     .state('PEZ', {
-    url: '/PEZ',
-    abstract: true,
-    templateUrl: 'templates/menu.html',
-    controller: 'PezCtrl'
-  })
+      url: '/PEZ',
+      abstract: true,
+      templateUrl: 'templates/menu.html',
+      controller: 'PezCtrl'
+    })
 
     .state('PEZ.Customers', {
       url: '/Customers',
       views: {
         'menuContent': {
           templateUrl: 'templates/Customers.html',
-          controller: 'CustomersCtrl'
+          controller: 'CustomerListCtrl'
+        }
+      }
+    })
+
+
+    .state('PEZ.CustomerEdit', {
+      url: '/Customer/Edit/:customerId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/CustomerDetails.html',
+          controller: 'CustomerCtrl'
         }
       }
     })
@@ -46,41 +57,41 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       url: '/Customer/Add',
       views: {
         'menuContent': {
-          templateUrl: 'templates/CustomerAdd.html',
-          controller: 'CustomerAddCtrl'
+          templateUrl: 'templates/CustomerDetails.html',
+          controller: 'CustomerCtrl'
         }
       }
     })
 
-    .state('PEZ.CustomerList', {
-      url: 'Customer/List/:customerId',
+    .state('PEZ.TreatmentList', {
+      url: '/TreatmentList/:customerId',
       views: {
         'menuContent': {
-          templateUrl: 'templates/CustomerList.html',
-          controller: 'CustomerListCtrl'
+          templateUrl: 'templates/TreatmentList.html',
+          controller: 'TreatmentListCtrl'
         }
       }
     })
 
     .state('PEZ.Treatment', {
-      url: '/Customer/Treatment/:customerId',
+      url: '/Treatment/:treatmentId/:customerId',
       views: {
         'menuContent': {
-          templateUrl: 'templates/CustomerTreatment.html',
-          controller: 'CustomerTreatmentCtrl'
+          templateUrl: 'templates/Treatment.html',
+          controller: 'TreatmentCtrl'
         }
       }
     })
 
-  .state('PEZ.single', {
-    url: '/Customer/:customerId',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/CustomerDetails.html',
-        controller: 'CustomerDetailsCtrl'
+    .state('PEZ.TreatmentAdd', {
+      url: '/Treatment/Add/:customerId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/Treatment.html',
+          controller: 'TreatmentAddCtrl'
+        }
       }
-    }
-  });
+    });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/PEZ/Customers');
 });

@@ -1,0 +1,12 @@
+<ion-view view-title="{{customer.name}} - Meðferðir">
+  <ion-nav-buttons side="right">
+    <a class="button button-icon ion-edit" menu-toggle="left" href="#/PEZ/Customer/Edit/{{customer.id}}"></a>
+    <a class="button button-icon ion-plus-round" menu-toggle="left" href="#/PEZ/Treatment/Add/{{customer.id}}"></a>
+  </ion-nav-buttons>
+
+  <ion-content>
+    <ion-item ng-repeat="treatment in treatments | orderBy: 'id':true" href="#/PEZ/Treatment/{{treatment.id}}/{{customer.id}}">
+      {{treatment.date}} - {{treatment.shortDescription}}
+    </ion-item>
+  </ion-content>
+</ion-view>

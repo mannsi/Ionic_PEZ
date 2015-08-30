@@ -1,5 +1,106 @@
-<ion-view view-title="Customer details">
-  <ion-content>
-    <h1>Customer Details</h1>
-  </ion-content>
+<ion-view view-title="{{customer.name}}">
+    <ion-content>
+
+        <div class="padding">
+            <button ng-click="getPhoto()" class="button button-block button-primary">Mynd</button>
+        </div>
+        <img ng-src="{{imageURI}}">
+
+        <form ng-submit="saveCustomer(customer)">
+            <h4>Grunn upplýsingar</h4>
+            <div class="list">
+                <label class="item item-input">
+                    <input type="text" placeholder="Nafn" ng-model="customer.name">
+                </label>
+                <label class="item item-input">
+                    <input type="tel" placeholder="Kennitala" ng-model="customer.ssn">
+                </label>
+                <label class="item item-input">
+                    <input type="tel" placeholder="Sími" ng-model="customer.phone">
+                </label>
+                <label class="item item-input">
+                    <input type="email" placeholder="Email" ng-model="customer.email">
+                </label>
+
+            </div>
+
+
+            <!-- TODO create summary for customer here -->
+
+
+            <div class="list">
+                <ion-item class="item-stable" ng-click="toggleGroup(adstandandi)" ng-class="{active: isGroupShown(adstandandi)}">
+                    <i class="icon" ng-class="isGroupShown(adstandandi) ? 'ion-minus' : 'ion-plus'"></i>
+                    &nbsp;
+                    Aðstandandi
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(adstandandi)">
+                    <label class="item item-input">
+                        <input type="text" placeholder="Nafn" ng-model="customer.nextOfKinName">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="Sími" ng-model="customer.nextOfKinPhone">
+                    </label>
+                </ion-item>
+            </div>
+
+            <div class="list">
+                <ion-item class="item-stable" ng-click="toggleGroup(sjukdomar)" ng-class="{active: isGroupShown(sjukdomar)}">
+                    <i class="icon" ng-class="isGroupShown(sjukdomar) ? 'ion-minus' : 'ion-plus'"></i>
+                    &nbsp;
+                    Sjúkdómar
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(sjukdomar)">
+                    <h2>Hjarta og æð</h2>
+                    <ion-checkbox ng-model="customer.diseases.aedakolkun">Æðakölkun</ion-checkbox>
+                    <ion-checkbox ng-model="customer.diseases.aedahnutar">Æðahnútar</ion-checkbox>
+                    <ion-checkbox ng-model="customer.diseases.bjugur">Bjúgur</ion-checkbox>
+                    <label class="item item-input">
+                        <input type="text" placeholder="Blóðþynnandi lyf" ng-model="customer.diseases.blodthinnandiLyf">
+                    </label>
+                    <label class="item item-input">
+                        <input type="text" placeholder="Önnur lyf" ng-model="customer.diseases.onnurLyf">
+                    </label>
+                </ion-item>
+
+                <ion-item class="item-accordion" ng-show="isGroupShown(sjukdomar)">
+                    <h2>Sykursýki</h2>
+                    <ion-radio ng-model="customer.diseases.sykursyki" ng-value="0">Nei</ion-radio>
+                    <ion-radio ng-model="customer.diseases.sykursyki" ng-value="1">Tegund 1</ion-radio>
+                    <ion-radio ng-model="customer.diseases.sykursyki" ng-value="2">Tegund 2</ion-radio>
+                </ion-item>
+
+                <ion-item class="item-accordion" ng-show="isGroupShown(sjukdomar)">
+                    <h2>Gigt</h2>
+                    <ion-checkbox ng-model="customer.diseases.slitGigt">Slitgigt</ion-checkbox>
+                    <ion-checkbox ng-model="customer.diseases.lidaGigt">Liðagigt</ion-checkbox>
+                    <ion-checkbox ng-model="customer.diseases.thvagsyruGigt">Þvagsýrugigt</ion-checkbox>
+                </ion-item>
+
+                <ion-item class="item-accordion" ng-show="isGroupShown(sjukdomar)">
+                    <h2>Aðrir</h2>
+                    <label class="item item-input">
+                        <input type="text" placeholder="Sjúkdómar" ng-model="customer.diseases.adrirSjukdomar">
+                    </label>
+                </ion-item>
+            </div>
+
+            <div class="list">
+                <ion-item class="item-stable" ng-click="toggleGroup(annad)" ng-class="{active: isGroupShown(annad)}">
+                    <i class="icon" ng-class="isGroupShown(annad) ? 'ion-minus' : 'ion-plus'"></i>
+                    &nbsp;
+                    Annað
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(annad)">
+                    <label class="item item-input">
+                        <input type="text" placeholder="Annað" ng-model="customer.annad">
+                    </label>
+                </ion-item>
+            </div>
+
+            <div class="padding">
+                <button type="submit" class="button button-block button-positive">Staðfesta</button>
+            </div>
+        </form>
+    </ion-content>
 </ion-view>
