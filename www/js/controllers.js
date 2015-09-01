@@ -15,17 +15,18 @@ angular.module('starter.controllers', [])
     })
 
     .controller('CustomerCtrl', function($scope, $stateParams, $ionicHistory, Camera, dataService) {
-        if ($stateParams.customerId)
-        {
+        if ($stateParams.customerId) {
             var customerId = $stateParams.customerId;
             var customerObject = dataService.GetCustomer(customerId);
             $scope.customer = customerObject;
         }
+        else{
+            $scope.customer = dataService.GetDefaultCustomer();
+        }
+        $scope.imageURI = $scope.customer.imageURI;
 
-        $scope.imageURI = '';
         $scope.getPhoto = function() {
             Camera.getPicture().then(function(imageURI) {
-                console.log(imageURI);
                 $scope.imageURI = imageURI;
             }, function(err) {
                 console.err(err);
@@ -33,10 +34,8 @@ angular.module('starter.controllers', [])
         }
 
         $scope.saveCustomer = function(customer) {
-            if (customer)
-            {
+            if (customer) {
                 customer.imageURI = $scope.imageURI;
-                console.log(customer);
                 dataService.SaveCustomer(customer);
             }
 
@@ -45,6 +44,7 @@ angular.module('starter.controllers', [])
 
         $scope.adstandandi = {show:false};
         $scope.sjukdomar = {show:false};
+        $scope.puls = {show:false};
         $scope.annad = {show:false};
 
         $scope.toggleGroup = function(group) {

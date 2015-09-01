@@ -15,7 +15,7 @@
                     return uuid;
                 };
 
-                if (!window.localStorage['customers']) {
+                if (!window.localStorage['customerList']) {
                     var customers = {};
                     var customerListObjects = {};
 
@@ -31,13 +31,13 @@
 
                     window.localStorage['customerList'] = JSON.stringify(customerListObjects);
 
-                    customers[id1] = {id:id1, name: 'Einar B. Sigurbergsson', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum'};
-                    customers[id2] = {id:id2, name: 'Ari Arason', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum'};
-                    customers[id3] = {id:id3, name: 'Sigga Ragga', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum' };
-                    customers[id4] = {id:id4, name: 'Hamstur Þorsteinssons', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum' };
+                    customers[id1] = {id:id1, name: 'Einar B. Sigurbergsson', imageURI:'', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum', dorsalisPuls:1, tibialisPuls:2};
+                    customers[id2] = {id:id2, name: 'Ari Arason', imageURI:'', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum', dorsalisPuls:1, tibialisPuls:2};
+                    customers[id3] = {id:id3, name: 'Sigga Ragga', imageURI:'', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum' , dorsalisPuls:1, tibialisPuls:2};
+                    customers[id4] = {id:id4, name: 'Hamstur Þorsteinssons', imageURI:'', ssn:'1234567899', phone:'5555555', email:'some@email.com', nextOfKinName:'Hamstur Meistari', nextOfKinPhone:'6666666', annad:'Slæmur í hnjánum' , dorsalisPuls:1, tibialisPuls:2};
 
                     var diseases = {aedakolkun:true, aedahnutar:false, bjugur:true, blodthinnandiLyf:'Eitthvað gott nafn', onnurLyf:'',
-                        sykursyki:0,slitGigt:true, lidaGigt:false, thvagsyruGigt:false, adrirSjukdomar:false};
+                        sykursyki:0,slitGigt:true, lidaGigt:false, thvagsyruGigt:false, gigtAnnad:'Einhver gigt', adrirSjukdomar:''};
 
                     customers[id1].diseases = diseases;
                     customers[id2].diseases = diseases;
@@ -68,6 +68,12 @@
             GetCustomer: function(customerId){
                 return JSON.parse(window.localStorage['customer-' + customerId]);
             },
+            GetDefaultCustomer: function(){
+                var defaultCustomer = {id:'', name: '', imageURI:'', ssn:'', phone:'', email:'', nextOfKinName:' ', nextOfKinPhone:'', annad:'', dorsalisPuls:1, tibialisPuls:1};
+                defaultCustomer.diseases = {aedakolkun:false, aedahnutar:false, bjugur:false, blodthinnandiLyf:'', onnurLyf:'',
+                    sykursyki:0,slitGigt:false, lidaGigt:false, thvagsyruGigt:false, gigtAnnad:'', adrirSjukdomar:''};
+                return defaultCustomer;
+            },
             SaveCustomer: function(customerObject){
                 function generateUUID(){
                     var d = new Date().getTime();
@@ -84,14 +90,14 @@
                     // New customer
                     var newId = generateUUID();
                     customerObject.id = newId;
+                    window.localStorage['treatments-' + customerObject.id] = JSON.stringify({});
                 }
 
                 var customerList = JSON.parse(window.localStorage['customerList']);
-                customerList[customerObject].id.name = customerObject.name;
+                var customerListObject = {id: customerObject.id, name: customerObject.name};
+                customerList[customerObject.id] = customerListObject;
                 window.localStorage['customerList'] = JSON.stringify(customerList);
-
                 window.localStorage['customer-' + customerObject.id] = JSON.stringify(customerObject);
-
             },
             GetTreatmentList: function(customerId){
                 return JSON.parse(window.localStorage['treatments-' + customerId]);

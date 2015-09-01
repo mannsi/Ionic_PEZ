@@ -2,9 +2,9 @@
     <ion-content>
 
         <div class="padding">
-            <button ng-click="getPhoto()" class="button button-block button-primary">Mynd</button>
+            <button ng-click="getPhoto()" class="button button-block button-primary">Taka Mynd</button>
         </div>
-        <img ng-src="{{imageURI}}">
+        <img ng-src="{{imageURI}}" width="100%">
 
         <form ng-submit="saveCustomer(customer)">
             <h4>Grunn upplýsingar</h4>
@@ -23,8 +23,7 @@
                 </label>
 
             </div>
-
-
+            
             <!-- TODO create summary for customer here -->
 
 
@@ -65,9 +64,9 @@
 
                 <ion-item class="item-accordion" ng-show="isGroupShown(sjukdomar)">
                     <h2>Sykursýki</h2>
-                    <ion-radio ng-model="customer.diseases.sykursyki" ng-value="0">Nei</ion-radio>
-                    <ion-radio ng-model="customer.diseases.sykursyki" ng-value="1">Tegund 1</ion-radio>
-                    <ion-radio ng-model="customer.diseases.sykursyki" ng-value="2">Tegund 2</ion-radio>
+                    <ion-radio name="sykursyki" ng-model="customer.diseases.sykursyki" ng-value=0>Nei</ion-radio>
+                    <ion-radio name="sykursyki" ng-model="customer.diseases.sykursyki" ng-value=1>Tegund 1</ion-radio>
+                    <ion-radio name="sykursyki" ng-model="customer.diseases.sykursyki" ng-value=2>Tegund 2</ion-radio>
                 </ion-item>
 
                 <ion-item class="item-accordion" ng-show="isGroupShown(sjukdomar)">
@@ -75,6 +74,9 @@
                     <ion-checkbox ng-model="customer.diseases.slitGigt">Slitgigt</ion-checkbox>
                     <ion-checkbox ng-model="customer.diseases.lidaGigt">Liðagigt</ion-checkbox>
                     <ion-checkbox ng-model="customer.diseases.thvagsyruGigt">Þvagsýrugigt</ion-checkbox>
+                    <label class="item item-input">
+                        <input type="text" placeholder="Annað" ng-model="customer.diseases.gigtAnnad">
+                    </label>
                 </ion-item>
 
                 <ion-item class="item-accordion" ng-show="isGroupShown(sjukdomar)">
@@ -82,6 +84,24 @@
                     <label class="item item-input">
                         <input type="text" placeholder="Sjúkdómar" ng-model="customer.diseases.adrirSjukdomar">
                     </label>
+                </ion-item>
+            </div>
+
+            <div class="list">
+                <ion-item class="item-stable" ng-click="toggleGroup(puls)" ng-class="{active: isGroupShown(puls)}">
+                    <i class="icon" ng-class="isGroupShown(puls) ? 'ion-minus' : 'ion-plus'"></i>
+                    &nbsp;
+                    Púls
+                </ion-item>
+                <ion-item class="item-accordion" ng-show="isGroupShown(puls)">
+                    <h2>Arteria dorsalis pedis</h2>
+                    <ion-radio name="dorsalisPuls" ng-model="customer.dorsalisPuls" ng-value=0>Kröftugur</ion-radio>
+                    <ion-radio name="dorsalisPuls" ng-model="customer.dorsalisPuls" ng-value=1>Eðlilegur</ion-radio>
+                    <ion-radio name="dorsalisPuls" ng-model="customer.dorsalisPuls" ng-value=2>Veikur</ion-radio>
+                    <h2>Arteria tibialis posterior</h2>
+                    <ion-radio name="tibialisPuls" ng-model="customer.tibialisPuls" ng-value=0>Kröftugur</ion-radio>
+                    <ion-radio name="tibialisPuls" ng-model="customer.tibialisPuls" ng-value=1>Eðlilegur</ion-radio>
+                    <ion-radio name="tibialisPuls" ng-model="customer.tibialisPuls" ng-value=2>Veikur</ion-radio>
                 </ion-item>
             </div>
 

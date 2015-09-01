@@ -34,6 +34,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
     .state('PEZ.Customers', {
       url: '/Customers',
+      cache: false,
       views: {
         'menuContent': {
           templateUrl: 'templates/Customers.html',
