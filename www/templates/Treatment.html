@@ -2,7 +2,12 @@
   <ion-nav-buttons side="right">
   </ion-nav-buttons>
   <ion-content>
-    <h1>Treatment</h1>
+      <canvas id="sheet"></canvas>
+      <br/>
+      <button ng-click="saveCanvas()">Save canvas</button>
+      <button ng-click="redraw()">Redraw</button>
+      <button ng-click="eraseMode()">Eraser</button>
+      <button ng-click="drawMode()">Draw</button>
   </ion-content>
 </ion-view>
 

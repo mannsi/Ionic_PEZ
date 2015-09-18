@@ -7,7 +7,7 @@
         <img ng-src="{{imageURI}}" width="100%">
 
         <form ng-submit="saveCustomer(customer)">
-            <h4>Grunn upplýsingar</h4>
+            <h4 on-tap="onTap()">Grunn upplýsingar</h4>
             <div class="list">
                 <label class="item item-input">
                     <input type="text" placeholder="Nafn" ng-model="customer.name">
@@ -23,7 +23,7 @@
                 </label>
 
             </div>
-            
+
             <!-- TODO create summary for customer here -->
 
 
