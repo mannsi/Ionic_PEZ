@@ -1,14 +1,19 @@
 <ion-view view-title="{{treatment.date}} - {{treatment.shortDescription}}">
-  <ion-nav-buttons side="right">
-  </ion-nav-buttons>
-  <ion-content>
-      <canvas id="sheet"></canvas>
-      <br/>
-      <button ng-click="saveCanvas()">Save canvas</button>
-      <button ng-click="redraw()">Redraw</button>
-      <button ng-click="eraseMode()">Eraser</button>
-      <button ng-click="drawMode()">Draw</button>
-  </ion-content>
+    <ion-nav-buttons side="right">
+    </ion-nav-buttons>
+    <ion-content>
+        <ion-scroll ng-if="treatment.images.length > 0" direction="x" style="height:200px; min-height: 200px; overflow: scroll; white-space: nowrap;">
+            <img ng-repeat="image in treatment.images" ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+        </ion-scroll>
+        <button ng-click="getPhoto()" class="button button-block button-primary">Taka Mynd</button>
+    
+        <canvas id="sheet"></canvas>
+        <br/>
+        <button ng-click="saveCanvas()">Save canvas</button>
+        <button ng-click="redraw()">Redraw</button>
+        <button ng-click="eraseMode()">Eraser</button>
+        <button ng-click="drawMode()">Draw</button>
+    </ion-content>
 </ion-view>
 
 

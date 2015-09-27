@@ -1,13 +1,15 @@
 <ion-view view-title="{{customer.name}}">
     <ion-content>
 
-        <div class="padding">
-            <button ng-click="getPhoto()" class="button button-block button-primary">Taka Mynd</button>
-        </div>
+        <button ng-click="getPhoto()" class="button button-block button-primary">Taka Mynd</button>
         <img ng-src="{{imageURI}}" width="100%">
 
+        <ion-scroll ng-if="customer.images.length > 0" direction="x" style="height:200px; min-height: 200px; overflow: scroll; white-space: nowrap;">
+            <img ng-repeat="image in customer.images" ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+        </ion-scroll>
+
         <form ng-submit="saveCustomer(customer)">
-            <h4 on-tap="onTap()">Grunn upplýsingar</h4>
+            <h4>Grunn upplýsingar</h4>
             <div class="list">
                 <label class="item item-input">
                     <input type="text" placeholder="Nafn" ng-model="customer.name">
@@ -21,11 +23,16 @@
                 <label class="item item-input">
                     <input type="email" placeholder="Email" ng-model="customer.email">
                 </label>
-
             </div>
 
-            <!-- TODO create summary for customer here -->
-
+            <div ng-if="customer.summary.length > 0">
+                <h4>Samantekt</h4>
+                <ion-list>
+                    <ion-item ng-repeat="summary in customer.summary">
+                        {{summary}}
+                    </ion-item>
+                </ion-list>
+            </div>
 
             <div class="list">
                 <ion-item class="item-stable" ng-click="toggleGroup(adstandandi)" ng-class="{active: isGroupShown(adstandandi)}">
@@ -95,13 +102,13 @@
                 </ion-item>
                 <ion-item class="item-accordion" ng-show="isGroupShown(puls)">
                     <h2>Arteria dorsalis pedis</h2>
-                    <ion-radio name="dorsalisPuls" ng-model="customer.dorsalisPuls" ng-value=0>Kröftugur</ion-radio>
-                    <ion-radio name="dorsalisPuls" ng-model="customer.dorsalisPuls" ng-value=1>Eðlilegur</ion-radio>
-                    <ion-radio name="dorsalisPuls" ng-model="customer.dorsalisPuls" ng-value=2>Veikur</ion-radio>
+                    <ion-radio name="dorsalisPuls" ng-model="customer.diseases.dorsalisPuls" ng-value=0>Kröftugur</ion-radio>
+                    <ion-radio name="dorsalisPuls" ng-model="customer.diseases.dorsalisPuls" ng-value=1>Eðlilegur</ion-radio>
+                    <ion-radio name="dorsalisPuls" ng-model="customer.diseases.dorsalisPuls" ng-value=2>Veikur</ion-radio>
                     <h2>Arteria tibialis posterior</h2>
-                    <ion-radio name="tibialisPuls" ng-model="customer.tibialisPuls" ng-value=0>Kröftugur</ion-radio>
-                    <ion-radio name="tibialisPuls" ng-model="customer.tibialisPuls" ng-value=1>Eðlilegur</ion-radio>
-                    <ion-radio name="tibialisPuls" ng-model="customer.tibialisPuls" ng-value=2>Veikur</ion-radio>
+                    <ion-radio name="tibialisPuls" ng-model="customer.diseases.tibialisPuls" ng-value=0>Kröftugur</ion-radio>
+                    <ion-radio name="tibialisPuls" ng-model="customer.diseases.tibialisPuls" ng-value=1>Eðlilegur</ion-radio>
+                    <ion-radio name="tibialisPuls" ng-model="customer.diseases.tibialisPuls" ng-value=2>Veikur</ion-radio>
                 </ion-item>
             </div>
 

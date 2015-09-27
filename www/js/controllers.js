@@ -1,31 +1,24 @@
-angular.module('starter.controllers', [])
+var controllers = angular.module('starter.controllers', []);
 
-    .controller('PezCtrl', function($scope, $ionicModal, $timeout) {
+    controllers.controller('PezCtrl', function($scope, $ionicModal, $timeout) {
+    });
 
-      // With the new view caching in Ionic, Controllers are only called
-      // when they are recreated or on app start, instead of every page change.
-      // To listen for when this page is active (for example, to refresh data),
-      // listen for the $ionicView.enter event:
-      //$scope.$on('$ionicView.enter', function(e) {
-      //});
-    })
-
-    .controller('CustomerListCtrl', function($scope, $state, dataService) {
-        $scope.customers = dataService.GetCustomerList();
+    controllers.controller('CustomerListCtrl', function($scope, $state, customerService) {
+        $scope.customers = customerService.GetCustomerList();
         $scope.deleteData = function(){
-            dataService.DeleteData();
+            customerService.DeleteData();
             $state.go($state.current, {}, {reload: true});
         }
-    })
+    });
 
-    .controller('CustomerCtrl', function($scope, $stateParams, $ionicHistory, Camera, dataService) {
+    controllers.controller('CustomerDetailsCtrl', function($scope, $stateParams, $ionicHistory, Camera, customerService) {
         if ($stateParams.customerId) {
             var customerId = $stateParams.customerId;
-            var customerObject = dataService.GetCustomer(customerId);
-            $scope.customer = customerObject;
+            var customerObject = customerService.GetCustomer(customerId);
+            $scope.customer = customerObject;            
         }
         else{
-            $scope.customer = dataService.GetDefaultCustomer();
+            $scope.customer = customerService.NewCustomer();
         }
         $scope.imageURI = $scope.customer.imageURI;
 
@@ -35,12 +28,12 @@ angular.module('starter.controllers', [])
             }, function(err) {
                 console.err(err);
             });
-        }
+        };
 
         $scope.saveCustomer = function(customer) {
             if (customer) {
                 customer.imageURI = $scope.imageURI;
-                dataService.SaveCustomer(customer);
+                customerService.SaveCustomer(customer);
             }
 
             $ionicHistory.goBack();
@@ -57,23 +50,38 @@ angular.module('starter.controllers', [])
         $scope.isGroupShown = function(group) {
             return group.show;
         };
-    })
+    });
 
-    .controller('TreatmentListCtrl', function($scope , $stateParams, dataService) {
+    controllers.controller('TreatmentListCtrl', function($scope , $stateParams, customerService, treatmentService) {
         var customerId = $stateParams.customerId;
-        $scope.customer = dataService.GetCustomer(customerId);
-        $scope.treatments = dataService.GetTreatmentList(customerId);
-    })
+        $scope.customer = customerService.GetCustomer(customerId);
+        $scope.treatments = treatmentService.GetTreatmentList(customerId);
+    });
 
-    .controller('TreatmentCtrl', function($scope , $stateParams, $ionicScrollDelegate, dataService) {
+    controllers.controller('TreatmentCtrl', function($scope , $stateParams , $state, $ionicScrollDelegate, Camera, customerService, treatmentService, photoService) {
         var customerId = $stateParams.customerId;
         var treatmentId = $stateParams.treatmentId;
-        $scope.customer = dataService.GetCustomer(customerId);
-        $scope.treatment = dataService.GetTreatment(customerId, treatmentId);
+        $scope.customer = customerService.GetCustomer(customerId);
+        $scope.treatment = treatmentService.GetTreatment(customerId, treatmentId);
 
+        // Picture stuff
+        // =============================================================================
+        $scope.getPhoto = function() {
+            Camera.getPicture().then(function(imageURI) {
+                photoService.SaveTreatmentPhoto(imageURI, customerId, treatmentId);
+                $scope.treatment = treatmentService.GetTreatment(customerId, treatmentId);
+            }, function(err) {
+                console.err(err);
+            });
+        };
+        
+        // =============================================================================
+        
+        // Drawing stuff
+        // =============================================================================
         $scope.saveCanvas = function(){
             var dataURL = canvas.toDataURL();
-            dataService.SaveTreatmentOverlay($scope.treatment.id, dataURL);
+            treatmentService.SaveTreatmentOverlay($scope.treatment.id, dataURL);
             console.log(dataURL);
         };
 
@@ -89,7 +97,6 @@ angular.module('starter.controllers', [])
             context.lineWidth = 10;
         };
 
-        // Drawing stuff
         var context = document.getElementById('sheet').getContext("2d");
         var canvas = document.getElementById('sheet');
         context = canvas.getContext("2d");
@@ -282,12 +289,11 @@ angular.module('starter.controllers', [])
         }
 
         canvas.addEventListener('mousedown', mouseWins);
-        canvas.addEventListener('touchstart', touchWins);
-    })
-
-    .controller('TreatmentAddCtrl', function($scope , $stateParams) {
-        $scope.treatment = {id: $stateParams.treatmentId};
+        canvas.addEventListener('touchstart', touchWins);    
     });
 
-
-
+    controllers.controller('TreatmentAddCtrl', function($scope , $stateParams) {
+        $scope.treatment = {id: $stateParams.treatmentId};
+    });
+    
+   
