@@ -13,7 +13,7 @@
         }
     });
 
-    app.factory('photoService', function(){
+    app.factory('photoService', ['$q', function($q){
         var photosPrefix = "photos-";
 
         function saveCustomerPhotos(customerId, customerPhotosObject){
@@ -34,6 +34,26 @@
                 customerPhotos = JSON.parse(window.localStorage[photosPrefix + customerId]);
             }
             return customerPhotos;
+        }
+
+        function resizedImageData(img_path) {
+            var q = $q.defer();
+            window.imageResizer.resizeImage(function (success_resp) {
+                console.log('success, img re-size: ' + JSON.stringify(success_resp));
+                q.resolve(success_resp);
+            }, function (fail_resp) {
+                console.log('fail, img re-size: ' + JSON.stringify(fail_resp));
+                q.reject(fail_resp);
+            }, img_path, 200, 0, {
+                imageDataType: ImageResizer.IMAGE_DATA_TYPE_URL,
+                resizeType: ImageResizer.RESIZE_TYPE_MIN_PIXEL,
+                pixelDensity: true,
+                storeImage: false,
+                photoAlbum: false,
+                format: 'jpg'
+            });
+
+            return q.promise;
         }
 
         return {
@@ -77,7 +97,7 @@
                 saveCustomerPhotos(customerId, customerPhotosObject);
             }
         }
-    });
+    }]);
 
     app.factory('treatmentService', [ 'utilitiesService', 'photoService', function(utilitiesService, photoService){
         function Treatment(id, shortDescription, date){
@@ -288,8 +308,10 @@
     }]);
 
     app.factory('Camera', ['$q', function($q) {
+        var cameraOptions = {targetWith: 0, targetHeight: 200};
+
         return {
-            getPicture: function(options) {
+            getPicture: function() {
                 var q = $q.defer();
 
                 navigator.camera.getPicture(function(result) {
@@ -297,10 +319,144 @@
                     q.resolve(result);
                 }, function(err) {
                     q.reject(err);
-                }, options);
+                }, cameraOptions);
 
                 return q.promise;
             }
         }
     }]);
+
+    app.factory('FileService', function($q) {
+
+        return {
+            checkDir: function (dir) {
+                var deferred = $q.defer();
+
+                getFilesystem().then(
+                    function(filesystem) {
+                        filesystem.root.getDirectory(dir, {create: false},
+                            function() {
+                                //Dir exist
+                                deferred.resolve();
+                            },
+                            function() {
+                                //Dir dont exist
+                                deferred.reject();
+                            }
+                        );
+                    }
+                );
+
+                return deferred.promise;
+            },
+
+            createDir: function (dir) {
+                getFilesystem().then(
+                    function(filesystem) {
+                        filesystem.root.getDirectory(dir, {create: true});
+                    }
+                );
+            },
+
+            checkFile: function (dir, file) {
+                var deferred = $q.defer();
+
+                getFilesystem().then(
+                    function(filesystem) {
+                        filesystem.root.getFile('/'+ dir +'/'+ file, {create: false},
+                            function() {
+                                //File exist
+                                deferred.resolve();
+                            },
+                            function() {
+                                //File dont exist
+                                deferred.reject();
+                            }
+                        );
+                    }
+                );
+
+                return deferred.promise;
+            },
+
+            createFile: function (dir, file) {
+                getFilesystem().then(
+                    function(filesystem) {
+                        filesystem.root.getFile('/'+ dir +'/'+ file, {create: true});
+                    }
+                );
+            },
+
+            removeFile: function (dir, file) {
+                var deferred = $q.defer();
+
+                getFilesystem().then(
+                    function(filesystem) {
+                        filesystem.root.getFile('/'+ dir +'/'+ file, {create: false}, function(fileEntry){
+                            fileEntry.remove(function() {
+                                deferred.resolve();
+                            });
+                        });
+                    }
+                );
+
+                return deferred.promise;
+            },
+
+            writeFile: function (dir, file) {
+                var deferred = $q.defer();
+
+                getFilesystem().then(
+                    function(filesystem) {
+                        filesystem.root.getFile('/'+ dir +'/'+ file, {create: false},
+                            function(fileEntry) {
+                                fileEntry.createWriter(function(fileWriter) {
+                                    deferred.resolve(fileWriter);
+                                });
+                            }
+                        );
+                    }
+                );
+
+                return deferred.promise;
+            },
+
+            readeFile: function (dir, file) {
+                var deferred = $q.defer();
+
+                getFilesystem().then(
+                    function(filesystem) {
+                        filesystem.root.getFile('/'+ dir +'/'+ file, {create: false},
+                            function(fileEntry) {
+
+                                fileEntry.file(function(file) {
+                                    var reader = new FileReader();
+
+                                    reader.onloadend = function() {
+                                        deferred.resolve(this.result);
+                                    };
+
+                                    reader.readAsText(file);
+
+                                });
+                            }
+                        );
+                    }
+                );
+
+                return deferred.promise;
+            }
+
+        };
+
+        function getFilesystem() {
+            var deferred = $q.defer();
+
+            window.requestFileSystem(window.PERSISTENT, 1024*1024, function(filesystem) {
+                deferred.resolve(filesystem);
+            });
+
+            return deferred.promise;
+        }
+    });
 
