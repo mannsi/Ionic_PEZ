@@ -1,18 +1,33 @@
-<ion-view view-title="{{treatment.date}} - {{treatment.shortDescription}}">
+<ion-view view-title="{{treatment.date}} - {{customer.name}}">
     <ion-nav-buttons side="right">
     </ion-nav-buttons>
     <ion-content>
-        <ion-scroll ng-if="treatment.images.length > 0" direction="x" style="height:200px; min-height: 200px; overflow: scroll; white-space: nowrap;">
-            <img ng-repeat="image in treatment.images" ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
+            <div class="list">
+                <h3>Stutt lýsing:</h3>
+                <label class="item item-input">
+
+                    <input type="text" ng-model="treatment.shortDescription">
+                </label>
+            </div>
+        <ion-scroll ng-if="treatment.images.length > 0" direction="x" style="overflow: scroll; white-space: nowrap;">
+            <img ng-repeat="image in treatment.photos" ng-src="{{image}}" on-hold="deleteImage(image)" style="height:200px; padding: 5px 5px 5px 5px;"/>
         </ion-scroll>
-        <button ng-click="getPhoto()" class="button button-block button-primary">Taka Mynd</button>
-    
-        <canvas id="sheet"></canvas>
-        <br/>
-        <button ng-click="saveCanvas()">Save canvas</button>
-        <button ng-click="redraw()">Redraw</button>
-        <button ng-click="eraseMode()">Eraser</button>
-        <button ng-click="drawMode()">Draw</button>
+        <div style="text-align:center;">
+            <button ng-click="getPhoto()" class="button icon ion-camera"></button>
+        </div>
+        <hr>
+        <a href="#/PEZ/TreatmentImage/{{treatment.id}}/{{customer.id}}">
+            <img src="{{treatment.feetImagePath}}" style="display: block; margin-left: auto; margin-right: auto"/>
+        </a>
+        <hr>
+        <h3>Nánari lýsing:</h3>
+        <label class="item item-input">
+            <textarea rows="5" ng-model="treatment.longDescription"></textarea>
+        </label>
+
+        <div class="padding">
+            <button type="submit" class="button button-block button-positive">Staðfesta</button>
+        </div>
     </ion-content>
 </ion-view>
 

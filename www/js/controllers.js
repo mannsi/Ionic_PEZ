@@ -58,11 +58,16 @@ var controllers = angular.module('starter.controllers', []);
         $scope.treatments = treatmentService.GetTreatmentList(customerId);
     });
 
-    controllers.controller('TreatmentCtrl', function($scope , $stateParams , $state, $ionicScrollDelegate, Camera, customerService, treatmentService, photoService) {
+    controllers.controller('TreatmentCtrl', function($scope , $stateParams , Camera, customerService, treatmentService, photoService) {
         var customerId = $stateParams.customerId;
         var treatmentId = $stateParams.treatmentId;
         $scope.customer = customerService.GetCustomer(customerId);
-        $scope.treatment = treatmentService.GetTreatment(customerId, treatmentId);
+        if(treatmentId) {
+            $scope.treatment = treatmentService.GetTreatment(customerId, treatmentId);
+        }
+        else{
+            $scope.treatment = treatmentService.NewTreatment();
+        }
 
         // Picture stuff
         // =============================================================================
@@ -74,222 +79,144 @@ var controllers = angular.module('starter.controllers', []);
                 console.err(err);
             });
         };
+
+        $scope.deleteImage = function(imageUri){
+            photoService.DeleteTreatmentPhoto(imageUri, customerId, treatmentId);
+        };
         
         // =============================================================================
-        
-        // Drawing stuff
-        // =============================================================================
+
+    });
+
+    controllers.controller('TreatmentImagesCtrl', function($scope , $stateParams , $ionicHistory, treatmentService) {
+        var customerId = $stateParams.customerId;
+        var treatmentId = $stateParams.treatmentId;
+        var treatment = treatmentService.GetTreatment(customerId, treatmentId);
+
         $scope.saveCanvas = function(){
-            var dataURL = canvas.toDataURL();
-            treatmentService.SaveTreatmentOverlay($scope.treatment.id, dataURL);
-            console.log(dataURL);
+            saveCanvasImage();
+            treatmentService.SaveTreatment(treatment);
+            $ionicHistory.goBack();
         };
 
-        $scope.drawMode = function() {
-            context.globalCompositeOperation = defaultGlobalCompositeOperation;
-            context.strokeStyle = "black";
-            context.lineWidth = 1;
-        };
-
-        $scope.eraseMode = function() {
-            context.globalCompositeOperation = "destination-out";
-            context.strokeStyle = "rgba(0,0,0,1)";
-            context.lineWidth = 10;
-        };
-
-        var context = document.getElementById('sheet').getContext("2d");
-        var canvas = document.getElementById('sheet');
-        context = canvas.getContext("2d");
-        context.lineJoin = "round";
-
-        var imageNativeWidth = 468;
-        var imageNativeHeight = 593;
-        canvas.width = Math.min(window.innerWidth, imageNativeWidth);
-        canvas.height = Math.min(window.innerHeight, imageNativeHeight);
-        $scope.drawMode();
-
-        var defaultGlobalCompositeOperation = context.globalCompositeOperation;
-        var clickX = [];
-        var clickY = [];
-        var clickDrag = [];
-        var paint;
-
-        /**
-         * Add information where the user clicked at.
-         * @param {number} x
-         * @param {number} y
-         * @return {boolean} dragging
-         */
-        function addClick(x, y, dragging) {
-            clickX.push(x);
-            clickY.push(y);
-            clickDrag.push(dragging);
+        function saveCanvasImage()
+        {
+            var imageDataUrl = canvas.toDataURL('image/jpeg', 1.0);
+            var imageData = imageDataUrl.replace(/data:image\/jpeg;base64,/, '');
+            cordova.exec(
+                function(imagePath){
+                    treatment.feetImagePath = imagePath;
+                },
+                function(errorMsg){
+                    console.log(errorMsg);
+                },
+                'Canvas2ImagePlugin',
+                'saveImageDataToLibrary',
+                [imageData]
+            );
         }
 
-        /**
-         * Redraw the complete canvas.
-         */
-        $scope.redraw = function() {
-            // Clears the canvas
-            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        // Drawing stuff
+        // TODO allow erasing somehow
+        // =======================================================================================
+        var lastPt=null;
+        var canvas = document.getElementById("footCanvas");
+        var ctx = canvas.getContext("2d");
+        var saveButton = document.getElementById('saveButton').clientHeight;
+        ctx.canvas.width = window.innerWidth;
+        ctx.canvas.height = window.innerHeight - saveButton - 20;
+        var defaultGlobalCompositeOperation = ctx.globalCompositeOperation;
+        var mode = "";
 
-            for (var i = 0; i < clickX.length; i += 1) {
-                if (!clickDrag[i] && i == 0) {
-                    context.beginPath();
-                    context.moveTo(clickX[i], clickY[i]);
-                    context.stroke();
-                } else if (!clickDrag[i] && i > 0) {
-                    context.closePath();
+        restoreCanvas();
+        drawMode();
 
-                    context.beginPath();
-                    context.moveTo(clickX[i], clickY[i]);
-                    context.stroke();
-                } else {
-                    context.lineTo(clickX[i], clickY[i]);
-                    context.stroke();
+        ionic.DomUtil.ready(function() {
+            canvas.addEventListener("touchmove", drawtouchmove, false);
+            canvas.addEventListener("touchend", endtouchmove, false);
+
+            canvas.addEventListener("mousedown", function() {
+                    canvas.addEventListener("mousemove", drawmousemove, false);
                 }
-            }
-        };
+                , false);
+            canvas.addEventListener("mouseup", endmousemove, false);
 
+        });
 
-
-        /**
-         * Draw the newly added point.
-         * @return {void}
-         */
-        function drawNew() {
-            $ionicScrollDelegate.freezeAllScrolls(true);
-            var i = clickX.length - 1;
-            if (!clickDrag[i]) {
-                if (clickX.length == 0) {
-                    context.beginPath();
-                    context.moveTo(clickX[i], clickY[i] + 0.5);
-                    context.stroke();
-                } else {
-                    context.closePath();
-
-                    context.beginPath();
-                    context.moveTo(clickX[i], clickY[i] + 0.5);
-                    context.stroke();
-                }
-            } else {
-                context.lineTo(clickX[i], clickY[i] + 0.5);
-                context.stroke();
-            }
-            $ionicScrollDelegate.freezeAllScrolls(true);
+        function drawMode(){
+            mode = "draw";
+            ctx.globalCompositeOperation = defaultGlobalCompositeOperation;
+            ctx.strokeStyle = 'purple';
+            ctx.lineWidth = 2;
         }
 
-        function getMouseCoordinates(event, canvas){
-            var totalOffsetX = 0;
-            var totalOffsetY = 0;
-            var canvasX = 0;
-            var canvasY = 0;
-            var currentElement = canvas;
-
-            do {
-                totalOffsetX += currentElement.offsetLeft;
-                totalOffsetY += currentElement.offsetTop;
-            }
-            while (currentElement = currentElement.offsetParent);
-
-            canvasX = event.pageX - totalOffsetX;
-            canvasY = event.pageY - totalOffsetY;
-
-            // Fix for variable canvas width
-            canvasX = Math.round( canvasX * (canvas.width / canvas.offsetWidth) );
-            canvasY = Math.round( canvasY * (canvas.height / canvas.offsetHeight) );
-
-            return {'x':canvasX, 'y':canvasY}
+        function eraseMode(){
+            mode = "erase";
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.strokeStyle = "rgba(0,0,0,1)";
+            ctx.lineWidth = 10;
         }
 
-        function mouseDownEventHandler(e) {
-            paint = true;
-            //var x = e.x - canvas.offsetLeft;
-            //var y = e.y - canvas.offsetTop;
-            //
-            //var x = e.layerX;
-            //var y = e.layerY;
-            //var x = e.pageX - getOffSetLeft(canvas);
-            //var y = e.pageY - getOffSetTop(canvas);
+        function restoreCanvas(){
+            drawMode();
+            for(var i= 0; i<treatment.drawingPoints; i++)
+            {
+                var point = treatment.drawingPoints[i];
+                drawPoint(point.x, point.y);
+            }
+            lastPt = null;
 
-            if (paint) {
-                var coords = getMouseCoordinates(e, canvas);
-                addClick(coords['x'], coords['y'], false);
-                drawNew();
+            eraseMode();
+            for(var i= 0; i<treatment.erasingPoints; i++)
+            {
+                var point = treatment.erasingPoints[i];
+                drawPoint(point.x, point.y);
+            }
+            lastPt = null;
+        }
+
+        function drawtouchmove(e) {
+            e.preventDefault();
+            var point = {x: e.touches[0].pageX, y: e.touches[0].pageY};
+            drawPoint(point);
+            addPointToTreatment(point);
+        }
+
+        function drawmousemove(e) {
+            e.preventDefault();
+            var point = {x: e.pageX, y: e.pageY};
+            drawPoint(point);
+            addPointToTreatment(point);
+        }
+
+        function addPointToTreatment(point){
+            if (mode == "draw"){
+                treatment.drawingPoints.push({x:point.x, y:point.y});
+            }else{
+                treatment.erasingPoints.push({x:point.x, y:point.y});
             }
         }
 
-        function touchstartEventHandler(e) {
-            paint = true;
-            if (paint) {
-                var coords = getMouseCoordinates(e.touches[0], canvas);
-                addClick(coords['x'], coords['y'], false);
-                //addClick(e.touches[0].pageX - canvas.offsetLeft, e.touches[0].pageY - canvas.offsetTop, false);
-                drawNew();
+        function drawPoint(point){
+            if(lastPt!=null) {
+                ctx.beginPath();
+                ctx.moveTo(lastPt.x, lastPt.y);
+                ctx.lineTo(point.x, point.y);
+                ctx.stroke();
             }
+            lastPt = {x:point.x, y:point.y};
         }
 
-        function mouseUpEventHandler(e) {
-            context.closePath();
-            paint = false;
+        function endtouchmove(e) {
+            e.preventDefault();
+            lastPt = null;
         }
 
-        function mouseMoveEventHandler(e) {
-            //var x = e.x - getOffSetLeft(canvas);
-            //var y = e.y - getOffSetTop(canvas);
-
-            //var x = e.x - canvas.offsetLeft;
-            //var y = e.y - canvas.offsetTop;
-
-            //var x = e.layerX;
-            //var y = e.layerY;
-            if (paint) {
-                var coords = getMouseCoordinates(e, canvas);
-                addClick(coords['x'], coords['y'], true);
-                drawNew();
-            }
+        function endmousemove(e) {
+            e.preventDefault();
+            canvas.removeEventListener("mousemove", drawmousemove, false);
+            lastPt = null;
         }
-
-        function touchMoveEventHandler(e) {
-            if (paint) {
-                var coords = getMouseCoordinates(e.touches[0], canvas);
-                addClick(coords['x'], coords['y'], true);
-                //addClick(e.touches[0].pageX - canvas.offsetLeft, e.touches[0].pageY - canvas.offsetTop, true);
-                //addClick(e.touches[0].layerX, e.touches[0].layerY, true);
-                drawNew();
-            }
-        }
-
-        function setUpHandler(isMouseandNotTouch, detectEvent) {
-            removeRaceHandlers();
-            if (isMouseandNotTouch) {
-                canvas.addEventListener('mouseup', mouseUpEventHandler);
-                canvas.addEventListener('mousemove', mouseMoveEventHandler);
-                canvas.addEventListener('mousedown', mouseDownEventHandler);
-                mouseDownEventHandler(detectEvent);
-            } else {
-                canvas.addEventListener('touchstart', touchstartEventHandler);
-                canvas.addEventListener('touchmove', touchMoveEventHandler);
-                canvas.addEventListener('touchend', mouseUpEventHandler);
-                touchstartEventHandler(detectEvent);
-            }
-        }
-
-        function mouseWins(e) {
-            setUpHandler(true, e);
-        }
-
-        function touchWins(e) {
-            setUpHandler(false, e);
-        }
-
-        function removeRaceHandlers() {
-            canvas.removeEventListener('mousedown', mouseWins);
-            canvas.removeEventListener('touchstart', touchWins);
-        }
-
-        canvas.addEventListener('mousedown', mouseWins);
-        canvas.addEventListener('touchstart', touchWins);    
     });
 
     controllers.controller('TreatmentAddCtrl', function($scope , $stateParams) {

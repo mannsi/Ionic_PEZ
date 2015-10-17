@@ -59,7 +59,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       views: {
         'menuContent': {
           templateUrl: 'templates/CustomerDetails.html',
-          controller: 'CustomerCtrl'
+          controller: 'CustomerDetailsCtrl'
         }
       }
     })
@@ -80,6 +80,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         'menuContent': {
           templateUrl: 'templates/Treatment.html',
           controller: 'TreatmentCtrl'
+        }
+      }
+    })
+
+    .state('PEZ.TreatmentImage', {
+      url: '/TreatmentImage/:treatmentId/:customerId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/TreatmentImages.html',
+          controller: 'TreatmentImagesCtrl'
         }
       }
     })

@@ -100,12 +100,16 @@
     }]);
 
     app.factory('treatmentService', [ 'utilitiesService', 'photoService', function(utilitiesService, photoService){
-        function Treatment(id, shortDescription, date){
-             this.id = id;
-             this.shortDescription = shortDescription;
-             this.date = date;
-             this.images = [];
-             this.overlayCoordinates = {'x': [], 'y': []};
+        function Treatment(id, shortDescription, date, longDescription, feetImagePath){
+            this.id = id;
+            this.shortDescription = shortDescription;
+            this.longDescription = longDescription;
+            this.date = date;
+            this.photos = [];
+            this.feetImagePath = feetImagePath;
+            this.drawingPoints = []; // List of {x:x_value, y:y_value} objects
+            this.erasingPoints = []; // List of {x:x_value, y:y_value} objects
+
         }
 
         var PublicFunctions = {
@@ -118,22 +122,26 @@
                 return treatment;
             },
             SaveTreatment: function(treatmentObject){
+                // TODO
+            },
+            NewTreatment: function(){
+                var currentDate = new Date();
+                var day = currentDate.getDate();
+                var month = currentDate.getMonth() + 1;
+                var year = currentDate.getFullYear();
 
-            },
-            SaveTreatmentOverlay: function(treatmentId, overlayUrl){
-                window.localStorage[treatmentId + "-overlay"] = overlayUrl;
-            },
-            GetTreatmentOverlay: function(treatmentId){
-                return window.localStorage[treatmentId + "-overlay"];
+                var treatment = new Treatment('','',day + "." + month + "." + year);
+                treatment.feetImagePath = "../img/BoothFeetCleaned.png";
+                return treatment;
             },
             CreateDemoTreatments: function(customerId)
             {
                 var treatments = {
-                    1: new Treatment(1, "Upphafsskoðun", "01.01.2015"),
-                    2: new Treatment(2, "Sveppir í vinstri", "16.02.2015"),
-                    3: new Treatment(3, "Sveppir á hægri", "05.04.2015"),
-                    4: new Treatment(4, "Sigg undir hæl", "12.05.2015"),
-                    5: new Treatment(5, "Mæla fyrir innleggi", "01.07.2015"),
+                    1: new Treatment(1, "Upphafsskoðun", "01.01.2015", "", "../img/BoothFeetCleaned.png"),
+                    2: new Treatment(2, "Sveppir í vinstri", "16.02.2015", "", "../img/BoothFeetCleaned.png"),
+                    3: new Treatment(3, "Sveppir á hægri", "05.04.2015", "", "../img/BoothFeetCleaned.png"),
+                    4: new Treatment(4, "Sigg undir hæl", "12.05.2015", "", "../img/BoothFeetCleaned.png"),
+                    5: new Treatment(5, "Mæla fyrir innleggi", "01.07.2015", "", "../img/BoothFeetCleaned.png")
                 };
                 window.localStorage['treatments-' + customerId] = JSON.stringify(treatments);
             }
@@ -327,7 +335,6 @@
     }]);
 
     app.factory('FileService', function($q) {
-
         return {
             checkDir: function (dir) {
                 var deferred = $q.defer();

@@ -2,7 +2,7 @@
     <ion-content>
 
         <button ng-click="getPhoto()" class="button button-block button-primary">Taka Mynd</button>
-        <img ng-src="{{imageURI}}" width="100%">
+        <img ng-src="{{imageURI}}" width="100%" max-width="500px">
 
         <ion-scroll ng-if="customer.images.length > 0" direction="x" style="height:200px; min-height: 200px; overflow: scroll; white-space: nowrap;">
             <img ng-repeat="image in customer.images" ng-src="{{image}}" style="height:200px; padding: 5px 5px 5px 5px;"/>
@@ -12,16 +12,20 @@
             <h4>Grunn upplýsingar</h4>
             <div class="list">
                 <label class="item item-input">
-                    <input type="text" placeholder="Nafn" ng-model="customer.name">
+                    <span class="input-label">Nafn</span>
+                    <input type="text" ng-model="customer.name">
                 </label>
                 <label class="item item-input">
-                    <input type="tel" placeholder="Kennitala" ng-model="customer.ssn">
+                    <span class="input-label">Kennitala</span>
+                    <input type="tel" ng-model="customer.ssn">
                 </label>
                 <label class="item item-input">
-                    <input type="tel" placeholder="Sími" ng-model="customer.phone">
+                    <span class="input-label">Sími</span>
+                    <input type="tel" ng-model="customer.phone">
                 </label>
                 <label class="item item-input">
-                    <input type="email" placeholder="Email" ng-model="customer.email">
+                    <span class="input-label">Email</span>
+                    <input type="email" ng-model="customer.email">
                 </label>
             </div>
 

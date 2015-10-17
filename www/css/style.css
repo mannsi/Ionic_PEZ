@@ -1,8 +1,8 @@
 /* Empty. Add your own CSS if you like */
 
 /* Border around the painting demo */
-#sheet {
+#footCanvas {
     border:1px solid black;
-    background-image:url('../img/test_foot.png');
+    background-image:url('../img/BoothFeetCleaned.png');
     background-size: 100% 100%;
 }
