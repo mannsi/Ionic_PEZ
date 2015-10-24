@@ -52,13 +52,13 @@ var controllers = angular.module('starter.controllers', []);
         };
     });
 
-    controllers.controller('TreatmentListCtrl', function($scope , $stateParams, customerService, treatmentService) {
+    controllers.controller('TreatmentListCtrl', function($scope, $stateParams, customerService, treatmentService) {
         var customerId = $stateParams.customerId;
         $scope.customer = customerService.GetCustomer(customerId);
         $scope.treatments = treatmentService.GetTreatmentList(customerId);
     });
 
-    controllers.controller('TreatmentCtrl', function($scope , $stateParams , Camera, customerService, treatmentService, photoService) {
+    controllers.controller('TreatmentCtrl', function($scope, $stateParams, $ionicHistory,  Camera, customerService, treatmentService, photoService) {
         var customerId = $stateParams.customerId;
         var treatmentId = $stateParams.treatmentId;
         $scope.customer = customerService.GetCustomer(customerId);
@@ -68,6 +68,11 @@ var controllers = angular.module('starter.controllers', []);
         else{
             $scope.treatment = treatmentService.NewTreatment();
         }
+
+        $scope.saveTreatment = function(treatment){
+            treatmentService.SaveTreatment($scope.customer.id, treatment);
+            $ionicHistory.goBack();
+        };
 
         // Picture stuff
         // =============================================================================

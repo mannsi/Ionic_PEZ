@@ -121,8 +121,15 @@
                 treatment.images = photoService.GetPhotosForTreatment(customerId, treatmentId);
                 return treatment;
             },
-            SaveTreatment: function(treatmentObject){
-                // TODO
+            SaveTreatment: function(customerId, treatmentObject){
+                var allCustomerTreatments = JSON.parse(window.localStorage['treatments-' + customerId]);
+                if (!allCustomerTreatments[treatmentObject.id])
+                {
+                    treatmentObject.id = utilitiesService.GenerateUuid();
+                }
+
+                allCustomerTreatments[treatmentObject.id] = treatmentObject;
+                window.localStorage['treatments-' + customerId] = JSON.stringify(allCustomerTreatments);
             },
             NewTreatment: function(){
                 var currentDate = new Date();

@@ -1,11 +1,11 @@
 describe('filePersistTest', function(){
     beforeEach(module('starter.services'));
 
-    it('can get an instance of my factory', inject(function(photosService) {
-        expect(photosService).toBeDefined();
+    it('can get an instance of my factory', inject(function(photoService) {
+        expect(photoService).toBeDefined();
     }));
 
-    it('photos persistance test', inject(function(photosService, utilitiesService) {
+    it('photos persistance test', inject(function(photoService, utilitiesService) {
         var photoUri1 = utilitiesService.GenerateUuid();
         var photoUri2 = utilitiesService.GenerateUuid();
         var photoUri3 = utilitiesService.GenerateUuid();
@@ -13,13 +13,13 @@ describe('filePersistTest', function(){
         var treatmentId1 = utilitiesService.GenerateUuid();
         var treatmentId2 = utilitiesService.GenerateUuid();
 
-        photosService.SaveTreatmentPhoto(photoUri1, customerId, treatmentId1);
-        photosService.SaveTreatmentPhoto(photoUri2, customerId, treatmentId1);
-        photosService.SaveTreatmentPhoto(photoUri3, customerId, treatmentId2);
+        photoService.SaveTreatmentPhoto(photoUri1, customerId, treatmentId1);
+        photoService.SaveTreatmentPhoto(photoUri2, customerId, treatmentId1);
+        photoService.SaveTreatmentPhoto(photoUri3, customerId, treatmentId2);
 
-        var customerPhotos = photosService.GetPhotosForCustomer(customerId);
-        var treatment1Photos = photosService.GetPhotosForTreatment(customerId, treatmentId1);
-        var treatment2Photos = photosService.GetPhotosForTreatment(customerId, treatmentId2);
+        var customerPhotos = photoService.GetPhotosForCustomer(customerId);
+        var treatment1Photos = photoService.GetPhotosForTreatment(customerId, treatmentId1);
+        var treatment2Photos = photoService.GetPhotosForTreatment(customerId, treatmentId2);
 
         expect(customerPhotos.length).toEqual(3);
         expect(customerPhotos.indexOf(photoUri1)).toBeGreaterThan(-1);
@@ -33,9 +33,9 @@ describe('filePersistTest', function(){
         expect(treatment2Photos.length).toEqual(1);
         expect(treatment2Photos.indexOf(photoUri3)).toBeGreaterThan(-1);
 
-        photosService.DeleteTreatmentPhoto(photoUri2, customerId, treatmentId1);
-        customerPhotos = photosService.GetPhotosForCustomer(customerId);
-        treatment1Photos = photosService.GetPhotosForTreatment(customerId, treatmentId1);
+        photoService.DeleteTreatmentPhoto(photoUri2, customerId, treatmentId1);
+        customerPhotos = photoService.GetPhotosForCustomer(customerId);
+        treatment1Photos = photoService.GetPhotosForTreatment(customerId, treatmentId1);
         expect(customerPhotos.length).toEqual(2);
         expect(customerPhotos.indexOf(photoUri2)).toEqual(-1);
         expect(treatment1Photos.length).toEqual(1);

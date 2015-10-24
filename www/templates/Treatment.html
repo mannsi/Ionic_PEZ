@@ -2,6 +2,7 @@
     <ion-nav-buttons side="right">
     </ion-nav-buttons>
     <ion-content>
+        <form ng-submit="saveTreatment(treatment)">
             <div class="list">
                 <h3>Stutt lýsing:</h3>
                 <label class="item item-input">
@@ -9,25 +10,26 @@
                     <input type="text" ng-model="treatment.shortDescription">
                 </label>
             </div>
-        <ion-scroll ng-if="treatment.images.length > 0" direction="x" style="overflow: scroll; white-space: nowrap;">
-            <img ng-repeat="image in treatment.photos" ng-src="{{image}}" on-hold="deleteImage(image)" style="height:200px; padding: 5px 5px 5px 5px;"/>
-        </ion-scroll>
-        <div style="text-align:center;">
-            <button ng-click="getPhoto()" class="button icon ion-camera"></button>
-        </div>
-        <hr>
-        <a href="#/PEZ/TreatmentImage/{{treatment.id}}/{{customer.id}}">
-            <img src="{{treatment.feetImagePath}}" style="display: block; margin-left: auto; margin-right: auto"/>
-        </a>
-        <hr>
-        <h3>Nánari lýsing:</h3>
-        <label class="item item-input">
-            <textarea rows="5" ng-model="treatment.longDescription"></textarea>
-        </label>
+            <ion-scroll ng-if="treatment.images.length > 0" direction="x" style="overflow: scroll; white-space: nowrap;">
+                <img ng-repeat="image in treatment.photos" ng-src="{{image}}" on-hold="deleteImage(image)" style="height:200px; padding: 5px 5px 5px 5px;"/>
+            </ion-scroll>
+            <div style="text-align:center;">
+                <button ng-click="getPhoto()" class="button icon ion-camera"></button>
+            </div>
+            <hr>
+            <a href="#/PEZ/TreatmentImage/{{treatment.id}}/{{customer.id}}">
+                <img src="{{treatment.feetImagePath}}" style="display: block; margin-left: auto; margin-right: auto"/>
+            </a>
+            <hr>
+            <h3>Nánari lýsing:</h3>
+            <label class="item item-input">
+                <textarea rows="5" ng-model="treatment.longDescription"></textarea>
+            </label>
 
-        <div class="padding">
-            <button type="submit" class="button button-block button-positive">Staðfesta</button>
-        </div>
+            <div class="padding">
+                <button type="submit" class="button button-block button-positive">Staðfesta</button>
+            </div>
+        </form>
     </ion-content>
 </ion-view>
 
